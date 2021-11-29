@@ -1,0 +1,772 @@
+import javax.swing.*;
+import javax.swing.table.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.*;
+
+public class Planner extends JFrame
+{
+	private DefaultTableModel dataTable;
+	private JTable planWeek1, planWeek2, planWeek3;
+	private Box containerFrame = new Box(BoxLayout.PAGE_AXIS);
+	private Object[] columnNames = new String[] {"","Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"};
+	private Object[][] rowData = new String[][] {{"Тема"},{"Текст"}};
+	private JButton buttonDay = new JButton("Дни продаж"), buttonCat = new JButton("Выбор категории аудитории");
+	private int flag1, flag2, dayMode, catMode;
+	/*
+	 * flag1 - обозначение дня продаж на первой и третьей неделях
+	 * flag2 - обозначение дня продаж на второй неделе
+	 * dayMode - режим выбора дней продаж и генерирования расписания по ним
+	 * catMode - режим выбора категории аудитории контента и генерирования расписания
+	 */
+	private String flagCat;
+	/*
+	 * в переменной сохраняется значение категории выбранной аудитории
+	 * значения: стандарт, декрет, см. функцию кнопки для выбора категории аудитории
+	 */
+	private Random random = new Random();
+	private int resultSale;
+	/* функция random определяет постановку информационного контента
+	 * 0 - информационного контента нет, 1 - информационный контент имеется
+	 * аналогично для resultWeek2 и resultWeek3
+	*/
+	private int resultWeek1, resultWeek2, resultWeek3;
+	private Color yellowColor = new Color(255, 250, 205); // развлекательный
+	private Color blueColor = new Color(100, 149, 237); // информационный
+	private Color greenColor = new Color(152, 251, 152); // продажи
+	private Color purpleColor = new Color(147, 112, 219); // экспертный
+
+	 /* Цвета по дням
+	  * Обозначение дней контента цветами (множество строчек)
+	  * Первая и третья недели идентичны, различаются лишь тем, что некоторые дни 3 недели выходят на 2
+	  * До дня продажи идёт информационный контент
+	  * До информационного контента идёт развлекательный
+	 */
+	/* Шаблон
+	 * else if (resultWeek1 == 0)
+	    				{
+	    				if (column == 1) setBackground(isSelected ? purpleColor : purpleColor);
+	    				else if(column == 3) setBackground(isSelected ? purpleColor : purpleColor);
+	    				else if (flag2 == 1)
+		    			{
+		    				if (column == 7) setBackground (isSelected ? blueColor : blueColor);
+		    				else if (column == 6) setBackground (isSelected ? yellowColor : yellowColor);
+		    				else setBackground(isSelected ? Color.white : Color.white);
+		    			}
+	    				else if (flag2 == 2)
+		    			{
+		    				if (column == 7) setBackground (isSelected ? yellowColor : yellowColor);
+		    				else setBackground(isSelected ? Color.white : Color.white);
+		    			}
+	    				else setBackground(isSelected ? Color.white : Color.white);
+	    			}
+	    			else if (resultWeek1 == 1)
+	    			{
+	    				if (column == 1) setBackground(isSelected ? blueColor : blueColor);
+	    				else if(column == 3) setBackground(isSelected ? purpleColor : purpleColor);
+	    				else if (flag2 == 1)
+		    			{
+		    				if (column == 7) setBackground (isSelected ? blueColor : blueColor);
+		    				else if (column == 6) setBackground (isSelected ? yellowColor : yellowColor);
+		    				else setBackground(isSelected ? Color.white : Color.white);
+		    			}
+	    				else if (flag2 == 2)
+		    			{
+		    				if (column == 7) setBackground (isSelected ? yellowColor : yellowColor);
+		    				else setBackground(isSelected ? Color.white : Color.white);
+		    			}
+	    				else setBackground(isSelected ? Color.white : Color.white);
+	    			}
+	 */
+	/* Первая неделя
+	 * Если указать понедельник и вторник, то развлекательного и информационного контента просто не будет!
+	 */
+	public class CustomCellRenderer1 extends DefaultTableCellRenderer
+	{
+	    @Override
+	    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column)
+	    {
+			// Работа с днями продаж
+	    	if (dayMode == 1)
+	    	{
+	    		if (flag1 == 1)
+	    		{
+	    			if (column == 1) setBackground(isSelected ? greenColor : greenColor);
+	    			else if (column == 2) setBackground(isSelected ? purpleColor : purpleColor);
+	    			else if (flag2 == 1)
+	    			{
+	    				if (column == 7) setBackground(isSelected ? blueColor : blueColor);
+	    				else if (column == 6) setBackground(isSelected ? yellowColor : yellowColor);
+						else setBackground(isSelected ? Color.white : Color.white);
+	    			}
+	    			else if (flag2 == 2)
+	    			{
+	    				if (column == 7) setBackground (isSelected ? yellowColor : yellowColor);
+	    				else setBackground(isSelected ? Color.white : Color.white);
+	    			}
+	    			else setBackground(isSelected ? Color.white : Color.white);
+	    		}
+	    		else if (flag1 == 2)
+	    		{
+	    			if (column == 2) setBackground(isSelected ? greenColor : greenColor);
+	    			else if (resultWeek1 == 0)
+	    			{
+	    				if (column == 1) setBackground(isSelected ? purpleColor : purpleColor);
+	    				else if(column == 3) setBackground(isSelected ? purpleColor : purpleColor);
+	    				else if (flag2 == 1)
+		    			{
+		    				if (column == 7) setBackground (isSelected ? blueColor : blueColor);
+		    				else if (column == 6) setBackground (isSelected ? yellowColor : yellowColor);
+		    				else setBackground(isSelected ? Color.white : Color.white);
+		    			}
+	    				else if (flag2 == 2)
+		    			{
+		    				if (column == 7) setBackground (isSelected ? yellowColor : yellowColor);
+		    				else setBackground(isSelected ? Color.white : Color.white);
+		    			}
+	    				else setBackground(isSelected ? Color.white : Color.white);
+	    			}
+	    			else if (resultWeek1 == 1)
+	    			{
+	    				if (column == 1) setBackground(isSelected ? blueColor : blueColor);
+	    				else if(column == 3) setBackground(isSelected ? purpleColor : purpleColor);
+	    				else if (flag2 == 1)
+		    			{
+		    				if (column == 7) setBackground (isSelected ? blueColor : blueColor);
+		    				else if (column == 6) setBackground (isSelected ? yellowColor : yellowColor);
+		    				else setBackground(isSelected ? Color.white : Color.white);
+		    			}
+	    				else if (flag2 == 2)
+		    			{
+		    				if (column == 7) setBackground (isSelected ? yellowColor : yellowColor);
+		    				else setBackground(isSelected ? Color.white : Color.white);
+		    			}
+	    				else setBackground(isSelected ? Color.white : Color.white);
+	    			}
+	    			else setBackground(isSelected ? Color.white : Color.white);
+	    		}
+	    		else if (flag1 == 3)
+	    		{
+	    			if (column == 3) setBackground(isSelected ? greenColor : greenColor);
+	    			else if (column == 1) setBackground (isSelected ? yellowColor: yellowColor);
+	    			else if (resultWeek1 == 0)
+	    			{
+	    				if (column == 2) setBackground(isSelected ? purpleColor : purpleColor);
+	    				else if(column == 4) setBackground(isSelected ? purpleColor : purpleColor);
+	    				else if (flag2 == 1)
+		    			{
+		    				if (column == 7) setBackground (isSelected ? blueColor : blueColor);
+		    				else if (column == 6) setBackground (isSelected ? yellowColor : yellowColor);
+		    				else setBackground(isSelected ? Color.white : Color.white);
+		    			}
+	    				else if (flag2 == 2)
+		    			{
+		    				if (column == 7) setBackground (isSelected ? yellowColor : yellowColor);
+		    				else setBackground(isSelected ? Color.white : Color.white);
+		    			}
+	    				else setBackground(isSelected ? Color.white : Color.white);
+	    			}
+	    			else if (resultWeek1 == 1)
+	    			{
+	    				if (column == 2) setBackground(isSelected ? blueColor : blueColor);
+	    				else if(column == 4) setBackground(isSelected ? purpleColor : purpleColor);
+	    				else if (flag2 == 1)
+		    			{
+		    				if (column == 7) setBackground (isSelected ? blueColor : blueColor);
+		    				else if (column == 6) setBackground (isSelected ? yellowColor : yellowColor);
+		    				else setBackground(isSelected ? Color.white : Color.white);
+		    			}
+	    				else if (flag2 == 2)
+		    			{
+		    				if (column == 7) setBackground (isSelected ? yellowColor : yellowColor);
+		    				else setBackground(isSelected ? Color.white : Color.white);
+		    			}
+	    				else setBackground(isSelected ? Color.white : Color.white);
+	    			}
+	    			else setBackground(isSelected ? Color.white : Color.white);
+	    		}
+	    		else if (flag1 == 4)
+	    		{
+	    			if (column == 4) setBackground(isSelected ? greenColor : greenColor);
+	    			else if (column == 2) setBackground (isSelected ? yellowColor: yellowColor);
+	    			else if (resultWeek1 == 0)
+	    			{
+	    				if (column == 3) setBackground(isSelected ? purpleColor : purpleColor);
+	    				else if(column == 5) setBackground(isSelected ? purpleColor : purpleColor);
+	    				else if (flag2 == 1)
+		    			{
+		    				if (column == 7) setBackground (isSelected ? blueColor : blueColor);
+		    				else if (column == 6) setBackground (isSelected ? yellowColor : yellowColor);
+		    				else setBackground(isSelected ? Color.white : Color.white);
+		    			}
+	    				else if (flag2 == 2)
+		    			{
+		    				if (column == 7) setBackground (isSelected ? yellowColor : yellowColor);
+		    				else setBackground(isSelected ? Color.white : Color.white);
+		    			}
+	    				else setBackground(isSelected ? Color.white : Color.white);
+	    			}
+	    			else if (resultWeek1 == 1)
+	    			{
+	    				if (column == 3) setBackground(isSelected ? blueColor : blueColor);
+	    				else if(column == 5) setBackground(isSelected ? purpleColor : purpleColor);
+	    				else if (flag2 == 1)
+		    			{
+		    				if (column == 7) setBackground (isSelected ? blueColor : blueColor);
+		    				else if (column == 6) setBackground (isSelected ? yellowColor : yellowColor);
+		    				else setBackground(isSelected ? Color.white : Color.white);
+		    			}
+	    				else if (flag2 == 2)
+		    			{
+		    				if (column == 7) setBackground (isSelected ? yellowColor : yellowColor);
+		    				else setBackground(isSelected ? Color.white : Color.white);
+		    			}
+	    				else setBackground(isSelected ? Color.white : Color.white);
+	    			}
+	    			else setBackground(isSelected ? Color.white : Color.white);
+	    		}
+	    		else if (flag1 == 5)
+	    		{
+	    			if (column == 5) setBackground(isSelected ? greenColor : greenColor);
+	    			else if (column == 4) setBackground (isSelected ? blueColor : blueColor);
+	    			else if (column == 3) setBackground (isSelected ? yellowColor: yellowColor);
+	    			else if (flag2 == 1)
+	    			{
+	    				if (column == 7) setBackground (isSelected ? blueColor : blueColor);
+	    				else if (column == 6) setBackground (isSelected ? yellowColor: yellowColor);
+	    				else setBackground(isSelected ? Color.white : Color.white);
+	    			}
+	    			else if (flag2 == 2)
+	    			{
+	    				if (column == 7) setBackground (isSelected ? yellowColor : yellowColor);
+	    				else setBackground(isSelected ? Color.white : Color.white);
+	    			}
+	    			else setBackground(isSelected ? Color.white : Color.white);
+	    		}
+	    		else if (flag1 == 6)
+	    		{
+	    			if (column == 6) setBackground(isSelected ? greenColor : greenColor);
+	    			else if (column == 5) setBackground (isSelected ? blueColor : blueColor);
+	    			else if (column == 4) setBackground (isSelected ? yellowColor: yellowColor);
+	    			else if (flag2 == 1)
+					{
+	    				if (column == 7) setBackground (isSelected ? blueColor : blueColor);
+	    				else setBackground(isSelected ? Color.white : Color.white);
+					}
+	    			else if (flag2 == 2)
+	    			{
+	    				if (column == 7) setBackground (isSelected ? yellowColor : yellowColor);
+	    				else setBackground(isSelected ? Color.white : Color.white);
+	    			}
+	    			else setBackground(isSelected ? Color.white : Color.white);
+	    		}
+	    		else if (flag1 == 7)
+	    		{
+	    			if (column == 7) setBackground(isSelected ? greenColor : greenColor);
+	    			else if (column == 6) setBackground (isSelected ? blueColor : blueColor);
+	    			else if (column == 5) setBackground (isSelected ? yellowColor: yellowColor);
+	    			else setBackground(isSelected ? Color.white : Color.white);
+	    		}
+	    	}
+			// работа с аудиторией
+	    	if (catMode == 1)
+	    	{
+	    		if (flagCat == "Стандарт")
+	    		{
+	    			if (resultSale == 0)
+	    			{
+	    				if (column == 3) setBackground(isSelected ? greenColor : greenColor);
+	    				else if (column == 1) setBackground(isSelected ? yellowColor : yellowColor);
+	    				else if (resultWeek1 == 0)
+	    				{
+	    					if (column == 2) setBackground(isSelected ? purpleColor : purpleColor);
+	    					else if (column == 4) setBackground(isSelected ? purpleColor : purpleColor);
+	    					else setBackground(isSelected ? Color.white : Color.white);
+	    				}
+	    				else if (resultWeek1 == 1)
+	    				{
+	    					if (column == 2) setBackground(isSelected ? blueColor : blueColor);
+	    					else if (column == 4) setBackground(isSelected ? purpleColor : purpleColor);
+	    					else setBackground(isSelected ? Color.white : Color.white);
+	    				}
+	    			}
+	    			if (resultSale == 1)
+	    			{
+	    				if (column == 4) setBackground(isSelected ? greenColor : greenColor);
+	    				else if (column == 2) setBackground(isSelected ? yellowColor : yellowColor);
+	    				else if (resultWeek1 == 0)
+	    				{
+	    					if (column == 3) setBackground(isSelected ? purpleColor : purpleColor);
+	    					else if (column == 5) setBackground(isSelected ? purpleColor : purpleColor);
+	    					else setBackground(isSelected ? Color.white : Color.white);
+	    				}
+	    				else if (resultWeek1 == 1)
+	    				{
+	    					if (column == 3) setBackground(isSelected ? blueColor : blueColor);
+	    					else if (column == 5) setBackground(isSelected ? purpleColor : purpleColor);
+	    					else setBackground(isSelected ? Color.white : Color.white);
+	    				}
+	    			}
+	    		}
+	    		if (flagCat == "Декрет")
+	    		{
+	    			if (resultSale == 0)
+	    			{
+	    				if (column == 6) setBackground(isSelected ? greenColor : greenColor);
+	    				else if (column == 4) setBackground(isSelected ? yellowColor : yellowColor);
+	    				else if (resultWeek1 == 0)
+	    				{
+	    					if (column == 5) setBackground(isSelected ? purpleColor : purpleColor);
+	    					else if (column == 7) setBackground(isSelected ? purpleColor : purpleColor);
+	    					else setBackground(isSelected ? Color.white : Color.white);
+	    				}
+	    				else if (resultWeek1 == 1)
+	    				{
+	    					if (column == 5) setBackground(isSelected ? blueColor : blueColor);
+	    					else if (column == 7) setBackground(isSelected ? purpleColor : purpleColor);
+	    					else setBackground(isSelected ? Color.white : Color.white);
+	    				}
+	    			}
+	    			if (resultSale == 1)
+	    			{
+	    				if (column == 7) setBackground(isSelected ? greenColor : greenColor);
+	    				else if (column == 5) setBackground(isSelected ? yellowColor : yellowColor);
+	    				else if (resultWeek1 == 0)
+	    				{
+	    					if (column == 6) setBackground(isSelected ? purpleColor : purpleColor);
+	    					// перекинуть экспертный контент на следующую неделю
+	    					else setBackground(isSelected ? Color.white : Color.white);
+	    				}
+	    				else if (resultWeek1 == 1)
+	    				{
+	    					if (column == 6) setBackground(isSelected ? blueColor : blueColor);
+	    					// перекинуть экспертный контент на следующую неделю
+	    					else setBackground(isSelected ? Color.white : Color.white);
+	    				}
+	    			}
+	    		}
+	    	}
+	    	setText(value != null ? value.toString() : "");
+	        return this;
+	    }
+	}
+	/* Вторая неделя
+	 * Если понедельник и вторник - дни продажи, то развлекательный и информационный уходят на первую неделю:
+	 * Понедельник: информационный воскресенье первой недели, развлекательный - суббота первой недели
+	 * Вторник: развлекательный - воскресенье первой недели
+	 */
+
+	public class CustomCellRenderer2 extends DefaultTableCellRenderer
+	{
+	    @Override
+	    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column)
+	    {
+			// работа с днями продаж
+	    	if (dayMode == 1)
+	    	{
+	    		if (flag2 == 1)
+	    		{
+	    			if (column == 1) setBackground(isSelected ? greenColor : greenColor);
+	    			else if (flag1 == 1)
+	    			{
+	    				if (column == 6) setBackground(isSelected ? yellowColor : yellowColor);
+	    				else if (column == 7) setBackground(isSelected ? blueColor : blueColor);
+	    				else setBackground(isSelected ? Color.white : Color.white);
+	    			}
+	    			else if (flag1 == 2)
+	    			{
+	    				if (column == 7) setBackground(isSelected ? yellowColor : yellowColor);
+	    				else setBackground (isSelected? Color.white : Color.white);
+	    			}
+	    		else setBackground(isSelected ? Color.white : Color.white);
+	    		}
+	    		else if (flag2 == 2)
+	    		{
+	    			if (column == 2) setBackground(isSelected ? greenColor : greenColor);
+	    			else if (column == 1) setBackground (isSelected ? blueColor : blueColor);
+	    			else if (flag1 == 1)
+	    			{
+	    				if (column == 7) setBackground(isSelected ? blueColor : blueColor);
+	    				else if (column == 6) setBackground(isSelected ? yellowColor : yellowColor);
+	    				else setBackground(isSelected ? Color.white : Color.white);
+	    			}
+	    			else if (flag1 == 2)
+	    			{
+	    				if (column == 7) setBackground(isSelected ? yellowColor : yellowColor);
+	    				else setBackground (isSelected? Color.white : Color.white);
+	    			}
+	    			else setBackground(isSelected ? Color.white : Color.white);
+	    		}
+			else if (flag2 == 3)
+			{
+				if (column == 3) setBackground(isSelected ? greenColor : greenColor);
+				else if (column == 2) setBackground (isSelected ? blueColor : blueColor);
+				else if (column == 1) setBackground (isSelected ? yellowColor: yellowColor);
+				else if (flag1 == 1)
+				{
+					if (column == 7) setBackground(isSelected ? blueColor : blueColor);
+					else if (column == 6) setBackground(isSelected ? yellowColor : yellowColor);
+					else setBackground(isSelected ? Color.white : Color.white);
+				}
+				else if (flag1 == 2)
+				{
+					if (column == 7) setBackground(isSelected ? yellowColor : yellowColor);
+					else setBackground (isSelected? Color.white : Color.white);
+				}
+				else setBackground(isSelected ? Color.white : Color.white);
+			}
+			else if (flag2 == 4)
+			{
+				if (column == 4) setBackground(isSelected ? greenColor : greenColor);
+				else if (column == 3) setBackground (isSelected ? blueColor : blueColor);
+				else if (column == 2) setBackground (isSelected ? yellowColor: yellowColor);
+				else if (flag1 == 1)
+				{
+					if (column == 7) setBackground(isSelected ? blueColor : blueColor);
+					else if (column == 6) setBackground(isSelected ? yellowColor : yellowColor);
+					else setBackground(isSelected ? Color.white : Color.white);
+				}
+				else if (flag1 == 2)
+				{
+					if (column == 7) setBackground(isSelected ? yellowColor : yellowColor);
+					else setBackground (isSelected? Color.white : Color.white);
+				}
+				else setBackground(isSelected ? Color.white : Color.white);
+			}
+			else if (flag2 == 5)
+			{
+				if (column == 5) setBackground(isSelected ? greenColor : greenColor);
+				else if (column == 4) setBackground (isSelected ? blueColor : blueColor);
+				else if (column == 3) setBackground (isSelected ? yellowColor: yellowColor);
+				else if (flag1 == 1)
+				{
+					if (column == 7) setBackground(isSelected ? blueColor : blueColor);
+					else if (column == 6) setBackground(isSelected ? yellowColor : yellowColor);
+					else setBackground(isSelected ? Color.white : Color.white);
+				}
+				else if (flag1 == 2)
+				{
+					if (column == 7) setBackground(isSelected ? yellowColor : yellowColor);
+					else setBackground (isSelected? Color.white : Color.white);
+				}
+				else setBackground(isSelected ? Color.white : Color.white);
+			}
+			else if (flag2 == 6)
+			{
+				if (column == 6) setBackground(isSelected ? greenColor : greenColor);
+				else if (column == 5) setBackground (isSelected ? blueColor : blueColor);
+				else if (column == 4) setBackground (isSelected ? yellowColor: yellowColor);
+				else if (flag1 == 1)
+				{
+					if (column == 7) setBackground(isSelected ? blueColor : blueColor);
+					else if (column == 6) setBackground(isSelected ? yellowColor : yellowColor);
+					else setBackground(isSelected ? Color.white : Color.white);
+				}
+				else if (flag1 == 2)
+				{
+					if (column == 7) setBackground(isSelected ? yellowColor : yellowColor);
+					else setBackground (isSelected? Color.white : Color.white);
+				}
+				else setBackground(isSelected ? Color.white : Color.white);
+			}
+			else if (flag2 == 7)
+			{
+				if (column == 7) setBackground(isSelected ? greenColor : greenColor);
+				else if (column == 6) setBackground (isSelected ? blueColor : blueColor);
+				else if (column == 5) setBackground (isSelected ? yellowColor: yellowColor);
+				else if (flag1 == 1)
+				{
+					if (column == 7) setBackground(isSelected ? blueColor : blueColor);
+					else if (column == 6) setBackground(isSelected ? yellowColor : yellowColor);
+					else setBackground(isSelected ? Color.white : Color.white);
+				}
+				else if (flag1 == 2)
+				{
+					if (column == 7) setBackground(isSelected ? yellowColor : yellowColor);
+					else setBackground (isSelected? Color.white : Color.white);
+				}
+				else setBackground(isSelected ? Color.white : Color.white);
+			}
+			}
+	    	// работа с аудиторией
+	    	if (catMode == 1) {
+	    		if (flagCat == "Стандарт")
+	    		{
+	    			if (resultSale == 0)
+	    			{
+	    				if (column == 4) setBackground(isSelected ? greenColor : greenColor);
+	    				else if (column == 2) setBackground(isSelected ? yellowColor : yellowColor);
+	    				else if (resultWeek2 == 0)
+	    				{
+	    					if (column == 3) setBackground(isSelected ? purpleColor : purpleColor);
+	    					else if (column == 5) setBackground(isSelected ? purpleColor : purpleColor);
+	    					else setBackground(isSelected ? Color.white : Color.white);
+	    				}
+	    				else if (resultWeek2 == 1)
+	    				{
+	    					if (column == 3) setBackground(isSelected ? blueColor : blueColor);
+	    					else if (column == 5) setBackground(isSelected ? purpleColor : purpleColor);
+	    					else setBackground(isSelected ? Color.white : Color.white);
+	    				}
+	    				else setBackground(isSelected ? Color.white : Color.white);
+	    			}
+	    			else if (resultSale == 1) {
+	    				if (column == 3) setBackground(isSelected ? greenColor : greenColor);
+	    				else if (column == 1) setBackground(isSelected ? yellowColor : yellowColor);
+	    				else if (resultWeek2 == 0)
+	    				{
+	    					if (column == 2) setBackground(isSelected ? purpleColor : purpleColor);
+	    					else if (column == 4) setBackground(isSelected ? purpleColor : purpleColor);
+	    					else setBackground(isSelected ? Color.white : Color.white);
+	    				}
+	    				else if (resultWeek2 == 1)
+	    				{
+	    					if (column == 2) setBackground(isSelected ? blueColor : blueColor);
+	    					else if (column == 4) setBackground(isSelected ? purpleColor : purpleColor);
+	    					else setBackground(isSelected ? Color.white : Color.white);
+	    				}
+	    				else setBackground(isSelected ? Color.white : Color.white);
+	    			}
+	    		}
+	    		else if (flagCat == "Декрет")
+	    		{
+	    			if (resultSale == 0)
+	    			{
+	    				if (column == 7) setBackground(isSelected ? greenColor : greenColor);
+	    				else if (column == 5) setBackground(isSelected ? yellowColor : yellowColor);
+	    				else if (resultWeek2 == 0)
+	    				{
+	    					if (column == 6) setBackground(isSelected ? purpleColor : purpleColor);
+	    					else setBackground(isSelected ? Color.white : Color.white);
+	    				}
+	    				else if (resultWeek2 == 1)
+	    				{
+	    					if (column == 6) setBackground(isSelected ? blueColor : blueColor);
+	    					else setBackground(isSelected ? Color.white : Color.white);
+	    				}
+	    			}
+	    			else if (resultSale == 1)
+	    			{
+	    				if (column == 6) setBackground(isSelected ? greenColor : greenColor);
+	    				else if (column == 4) setBackground(isSelected ? yellowColor : yellowColor);
+	    				else if (resultWeek2 == 0)
+	    				{
+	    					if (column == 5) setBackground(isSelected ? purpleColor : purpleColor);
+	    					else if (column == 7) setBackground(isSelected ? purpleColor : purpleColor);
+	    					else setBackground(isSelected ? Color.white : Color.white);
+	    				}
+	    				else if (resultWeek2 == 1)
+	    				{
+	    					if (column == 5) setBackground(isSelected ? blueColor : blueColor);
+	    					else if (column == 7) setBackground(isSelected ? purpleColor : purpleColor);
+	    					else setBackground(isSelected ? Color.white : Color.white);
+	    				}
+	    				else setBackground(isSelected ? Color.white : Color.white);
+	    			}
+	    		}
+	    	}
+			setText(value != null ? value.toString() : "");
+	        return this;
+	    }
+	}
+
+	/* Третья неделя
+	 * Аналогично второй: некоторые дни уходят на вторую неделю
+	 */
+
+	public class CustomCellRenderer3 extends DefaultTableCellRenderer
+	{
+	    @Override
+	    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+	    	// работа с днями продаж
+	    	if (dayMode == 1) {
+	    	if (flag1 == 1)
+			{
+				if (column == 1) setBackground(isSelected ? greenColor : greenColor);
+				else setBackground(isSelected ? Color.white : Color.white);
+			}
+			else if (flag1 == 2)
+			{
+				if (column == 2) setBackground(isSelected ? greenColor : greenColor);
+				else if (column == 1) setBackground (isSelected ? blueColor : blueColor);
+				else setBackground(isSelected ? Color.white : Color.white);
+			}
+			else if (flag1 == 3)
+			{
+				if (column == 3) setBackground(isSelected ? greenColor : greenColor);
+				else if (column == 2) setBackground (isSelected ? blueColor : blueColor);
+				else if (column == 1) setBackground (isSelected ? yellowColor: yellowColor);
+				else setBackground(isSelected ? Color.white : Color.white);
+			}
+			else if (flag1 == 4)
+			{
+				if (column == 4) setBackground(isSelected ? greenColor : greenColor);
+				else if (column == 3) setBackground (isSelected ? blueColor : blueColor);
+				else if (column == 2) setBackground (isSelected ? yellowColor: yellowColor);
+				else setBackground(isSelected ? Color.white : Color.white);
+			}
+			else if (flag1 == 5)
+			{
+				if (column == 5) setBackground(isSelected ? greenColor : greenColor);
+				else if (column == 4) setBackground (isSelected ? blueColor : blueColor);
+				else if (column == 3) setBackground (isSelected ? yellowColor: yellowColor);
+				else setBackground(isSelected ? Color.white : Color.white);
+			}
+			else if (flag1 == 6)
+			{
+				if (column == 6) setBackground(isSelected ? greenColor : greenColor);
+				else if (column == 5) setBackground (isSelected ? blueColor : blueColor);
+				else if (column == 4) setBackground (isSelected ? yellowColor: yellowColor);
+				else setBackground(isSelected ? Color.white : Color.white);
+			}
+			else if (flag1 == 7)
+			{
+				if (column == 7) setBackground(isSelected ? greenColor : greenColor);
+				else if (column == 6) setBackground (isSelected ? blueColor : blueColor);
+				else if (column == 5) setBackground (isSelected ? yellowColor: yellowColor);
+				else setBackground(isSelected ? Color.white : Color.white);
+			}
+	    	}
+	    	// работа с аудиторией
+	    	else if (catMode == 1)
+	    	{
+	    		if (flagCat == "Стандарт")
+	    		{
+	    			if (resultSale == 0) {
+	    				if (column == 3) setBackground(isSelected ? greenColor : greenColor);
+	    				else if (column == 1) setBackground(isSelected ? yellowColor : yellowColor);
+	    				else if (resultWeek3 == 0)
+	    				{
+	    					if (column == 2) setBackground(isSelected ? purpleColor : purpleColor);
+	    					else if (column == 4) setBackground(isSelected ? purpleColor : purpleColor);
+	    					else setBackground(isSelected ? Color.white : Color.white);
+	    				}
+	    				else if (resultWeek3 == 1)
+	    				{
+	    					if (column == 2) setBackground(isSelected ? blueColor : blueColor);
+	    					else if (column == 4) setBackground(isSelected ? purpleColor : purpleColor);
+	    					else setBackground(isSelected ? Color.white : Color.white);
+	    				}
+	    				else setBackground(isSelected ? Color.white : Color.white);
+	    			}
+	    			else if (resultSale == 1) {
+	    				if (column == 4) setBackground(isSelected ? greenColor : greenColor);
+	    				else if (column == 2) setBackground(isSelected ? yellowColor : yellowColor);
+	    				else if (resultWeek3 == 0)
+	    				{
+	    					if (column == 3) setBackground(isSelected ? purpleColor : purpleColor);
+	    					else if (column == 5) setBackground(isSelected ? purpleColor : purpleColor);
+	    					else setBackground(isSelected ? Color.white : Color.white);
+	    				}
+	    				else if (resultWeek3 == 1)
+	    				{
+	    					if (column == 3) setBackground(isSelected ? blueColor : blueColor);
+	    					else if (column == 5) setBackground(isSelected ? purpleColor : purpleColor);
+	    					else setBackground(isSelected ? Color.white : Color.white);
+	    				}
+	    				else setBackground(isSelected ? Color.white : Color.white);
+	    			}
+	    		}
+	    		if (flagCat == "Декрет")
+	    		{
+	    			if (resultSale == 0)
+	    			{
+	    				if (column == 6) setBackground(isSelected ? greenColor : greenColor);
+	    				else if (column == 4) setBackground(isSelected ? yellowColor : yellowColor);
+	    				else setBackground(isSelected ? Color.white : Color.white);
+	    			}
+	    			else if (resultSale == 1)
+	    			{
+	    				if (column == 7) setBackground(isSelected ? greenColor : greenColor);
+	    				else if (column == 5) setBackground(isSelected ? yellowColor : yellowColor);
+	    				else setBackground(isSelected ? Color.white : Color.white);
+	    			}
+	    		}
+	    	}
+	    	setText(value != null ? value.toString() : "");
+	        return this;
+	    	}
+	}
+	public Planner()
+	{
+		// настройки окна
+		super("ContentPlan");
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		dataTable = new DefaultTableModel();
+		dataTable.setColumnIdentifiers(columnNames);
+		for (int i = 0; i < rowData.length; i++)
+		{
+			dataTable.addRow(rowData[i]);
+		}
+		planWeek1 = new JTable(dataTable);
+		planWeek2 = new JTable(dataTable);
+		planWeek3 = new JTable(dataTable);
+		planWeek1.setRowSelectionAllowed(false);
+		planWeek1.setDefaultRenderer(Object.class, new CustomCellRenderer1());
+		planWeek2.setDefaultRenderer(Object.class, new CustomCellRenderer2());
+		planWeek3.setDefaultRenderer(Object.class, new CustomCellRenderer3());
+		planWeek1.setRowHeight(150);
+		planWeek2.setRowHeight(150);
+		planWeek3.setRowHeight(150);
+		// кнопка определения дня продаж
+		containerFrame.add(buttonDay, BorderLayout.NORTH);
+		buttonDay.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				resultWeek1 = random.nextInt(2);
+				resultWeek2 = random.nextInt(2);
+				resultWeek3 = random.nextInt(2);
+				String[] optionsDay = {"Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"};
+				String day1 = (String) JOptionPane.showInputDialog(null, "Выберите первый день продаж", "Первый день продаж", JOptionPane.QUESTION_MESSAGE, null, optionsDay, optionsDay[0]);
+				if (day1 == "Понедельник") flag1 = 1;
+				else if (day1 == "Вторник") flag1 = 2;
+				else if (day1 == "Среда") flag1 = 3;
+				else if (day1 == "Четверг") flag1 = 4;
+				else if (day1 == "Пятница") flag1 = 5;
+				else if (day1 == "Суббота") flag1 = 6;
+				else if (day1 == "Воскресенье") flag1 = 7;
+				String day2 = (String) JOptionPane.showInputDialog(null, "Выберите второй день продаж", "Второй день продаж", JOptionPane.QUESTION_MESSAGE, null, optionsDay, optionsDay[0]);
+				if (day2 == "Понедельник") flag2 = 1;
+				else if (day2 == "Вторник") flag2 = 2;
+				else if (day2 == "Среда") flag2 = 3;
+				else if (day2 == "Четверг") flag2 = 4;
+				else if (day2 == "Пятница") flag2 = 5;
+				else if (day2 == "Суббота") flag2 = 6;
+				else if (day2 == "Воскресенье") flag2 = 7;
+				catMode = 0;
+				dayMode = 1;
+			}
+		});
+		// кнопка определения аудитории контента
+		containerFrame.add(buttonCat, BorderLayout.NORTH);
+		buttonCat.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				resultWeek1 = random.nextInt(2);
+				resultWeek2 = random.nextInt(2);
+				resultWeek3 = random.nextInt(2);
+				resultSale = random.nextInt(2);
+				String[] optionsCat = {"Стандарт (среда, четверг)", "Женщины в декрете (суббота, воскресенье)"};
+				String category = (String) JOptionPane.showInputDialog(null, "Выберите аудиторию контента", "Аудитория контента", JOptionPane.QUESTION_MESSAGE, null, optionsCat, optionsCat[0]);
+				if (category == "Стандарт (среда, четверг)") flagCat = "Стандарт";
+				else if (category == "Женщины в декрете (суббота, воскресенье)") flagCat = "Декрет";
+				catMode = 1;
+				dayMode = 0;
+			}
+		});
+		// заполнение объектов в контейнер
+		containerFrame.add(new JScrollPane(planWeek1));
+		containerFrame.add(new JScrollPane(planWeek2));
+		containerFrame.add(new JScrollPane(planWeek3));
+		getContentPane().add(containerFrame);
+		setSize(800, 600);
+		setVisible(true);
+	}
+
+	public static void main(String[] args)
+	{
+		new Planner();
+	}
+}
