@@ -9,7 +9,9 @@ public class Planner extends JFrame
 	private DefaultTableModel dataTable;
 	private JTable planWeek1, planWeek2, planWeek3;
 	private Box containerFrame = new Box(BoxLayout.PAGE_AXIS);
+	// названия колонок
 	private Object[] columnNames = new String[] {"","Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"};
+	// названия строк
 	private Object[][] rowData = new String[][] {{"Тема"},{"Текст"}};
 	private JButton buttonDay = new JButton("Дни продаж"), buttonCat = new JButton("Выбор категории аудитории");
 	private int flag1, flag2, dayMode, catMode;
@@ -31,53 +33,18 @@ public class Planner extends JFrame
 	 * аналогично для resultWeek2 и resultWeek3
 	*/
 	private int resultWeek1, resultWeek2, resultWeek3;
-	private Color yellowColor = new Color(255, 250, 205); // развлекательный
-	private Color blueColor = new Color(100, 149, 237); // информационный
-	private Color greenColor = new Color(152, 251, 152); // продажи
-	private Color purpleColor = new Color(147, 112, 219); // экспертный
-
-	 /* Цвета по дням
+	/* Цвета по дням
 	  * Обозначение дней контента цветами (множество строчек)
 	  * Первая и третья недели идентичны, различаются лишь тем, что некоторые дни 3 недели выходят на 2
 	  * До дня продажи идёт информационный контент
 	  * До информационного контента идёт развлекательный
 	 */
-	/* Шаблон
-	 * else if (resultWeek1 == 0)
-	    				{
-	    				if (column == 1) setBackground(isSelected ? purpleColor : purpleColor);
-	    				else if(column == 3) setBackground(isSelected ? purpleColor : purpleColor);
-	    				else if (flag2 == 1)
-		    			{
-		    				if (column == 7) setBackground (isSelected ? blueColor : blueColor);
-		    				else if (column == 6) setBackground (isSelected ? yellowColor : yellowColor);
-		    				else setBackground(isSelected ? Color.white : Color.white);
-		    			}
-	    				else if (flag2 == 2)
-		    			{
-		    				if (column == 7) setBackground (isSelected ? yellowColor : yellowColor);
-		    				else setBackground(isSelected ? Color.white : Color.white);
-		    			}
-	    				else setBackground(isSelected ? Color.white : Color.white);
-	    			}
-	    			else if (resultWeek1 == 1)
-	    			{
-	    				if (column == 1) setBackground(isSelected ? blueColor : blueColor);
-	    				else if(column == 3) setBackground(isSelected ? purpleColor : purpleColor);
-	    				else if (flag2 == 1)
-		    			{
-		    				if (column == 7) setBackground (isSelected ? blueColor : blueColor);
-		    				else if (column == 6) setBackground (isSelected ? yellowColor : yellowColor);
-		    				else setBackground(isSelected ? Color.white : Color.white);
-		    			}
-	    				else if (flag2 == 2)
-		    			{
-		    				if (column == 7) setBackground (isSelected ? yellowColor : yellowColor);
-		    				else setBackground(isSelected ? Color.white : Color.white);
-		    			}
-	    				else setBackground(isSelected ? Color.white : Color.white);
-	    			}
-	 */
+	private Color yellowColor = new Color(255, 250, 205); // развлекательный, жёлтый цвет
+	private Color blueColor = new Color(135, 206, 250); // информационный, синий цвет
+	private Color greenColor = new Color(152, 251, 152); // продажи, зелёный цвет
+	private Color purpleColor = new Color(221, 160, 221); // экспертный, фиолетовый цвет
+
+
 	/* Первая неделя
 	 * Если указать понедельник и вторник, то развлекательного и информационного контента просто не будет!
 	 */
@@ -89,15 +56,24 @@ public class Planner extends JFrame
 			// Работа с днями продаж
 	    	if (dayMode == 1)
 	    	{
+	    		// Понедельник
 	    		if (flag1 == 1)
 	    		{
 	    			if (column == 1) setBackground(isSelected ? greenColor : greenColor);
 	    			else if (column == 2) setBackground(isSelected ? purpleColor : purpleColor);
 	    			else if (flag2 == 1)
 	    			{
-	    				if (column == 7) setBackground(isSelected ? blueColor : blueColor);
-	    				else if (column == 6) setBackground(isSelected ? yellowColor : yellowColor);
-						else setBackground(isSelected ? Color.white : Color.white);
+	    				if (column == 6) setBackground(isSelected ? yellowColor : yellowColor);
+	    				else if (resultWeek2 == 0)
+	    				{
+	    					if (column == 7) setBackground(isSelected ? purpleColor : purpleColor);
+	    					else setBackground(isSelected ? Color.white : Color.white);
+	    				}
+	    				else if (resultWeek2 == 1)
+	    				{
+	    					if (column == 7) setBackground(isSelected ? blueColor : blueColor);
+	    					else setBackground(isSelected ? Color.white : Color.white);
+	    				}
 	    			}
 	    			else if (flag2 == 2)
 	    			{
@@ -106,18 +82,27 @@ public class Planner extends JFrame
 	    			}
 	    			else setBackground(isSelected ? Color.white : Color.white);
 	    		}
+	    		// Вторник
 	    		else if (flag1 == 2)
 	    		{
 	    			if (column == 2) setBackground(isSelected ? greenColor : greenColor);
+	    			else if (column == 3) setBackground(isSelected ? purpleColor : purpleColor);
 	    			else if (resultWeek1 == 0)
 	    			{
 	    				if (column == 1) setBackground(isSelected ? purpleColor : purpleColor);
-	    				else if(column == 3) setBackground(isSelected ? purpleColor : purpleColor);
 	    				else if (flag2 == 1)
 		    			{
-		    				if (column == 7) setBackground (isSelected ? blueColor : blueColor);
-		    				else if (column == 6) setBackground (isSelected ? yellowColor : yellowColor);
-		    				else setBackground(isSelected ? Color.white : Color.white);
+		    				if (column == 6) setBackground(isSelected ? yellowColor : yellowColor);
+		    				else if (resultWeek2 == 0)
+		    				{
+		    					if (column == 7) setBackground(isSelected ? purpleColor : purpleColor);
+		    					else setBackground(isSelected ? Color.white : Color.white);
+		    				}
+		    				else if (resultWeek2 == 1)
+		    				{
+		    					if (column == 7) setBackground(isSelected ? blueColor : blueColor);
+		    					else setBackground(isSelected ? Color.white : Color.white);
+		    				}
 		    			}
 	    				else if (flag2 == 2)
 		    			{
@@ -129,12 +114,19 @@ public class Planner extends JFrame
 	    			else if (resultWeek1 == 1)
 	    			{
 	    				if (column == 1) setBackground(isSelected ? blueColor : blueColor);
-	    				else if(column == 3) setBackground(isSelected ? purpleColor : purpleColor);
 	    				else if (flag2 == 1)
 		    			{
-		    				if (column == 7) setBackground (isSelected ? blueColor : blueColor);
-		    				else if (column == 6) setBackground (isSelected ? yellowColor : yellowColor);
-		    				else setBackground(isSelected ? Color.white : Color.white);
+		    				if (column == 6) setBackground(isSelected ? yellowColor : yellowColor);
+		    				else if (resultWeek2 == 0)
+		    				{
+		    					if (column == 7) setBackground(isSelected ? purpleColor : purpleColor);
+		    					else setBackground(isSelected ? Color.white : Color.white);
+		    				}
+		    				else if (resultWeek2 == 1)
+		    				{
+		    					if (column == 7) setBackground(isSelected ? blueColor : blueColor);
+		    					else setBackground(isSelected ? Color.white : Color.white);
+		    				}
 		    			}
 	    				else if (flag2 == 2)
 		    			{
@@ -145,19 +137,29 @@ public class Planner extends JFrame
 	    			}
 	    			else setBackground(isSelected ? Color.white : Color.white);
 	    		}
+	    		// Среда
 	    		else if (flag1 == 3)
 	    		{
 	    			if (column == 3) setBackground(isSelected ? greenColor : greenColor);
 	    			else if (column == 1) setBackground (isSelected ? yellowColor: yellowColor);
+	    			else if (column == 4) setBackground(isSelected ? purpleColor : purpleColor);
 	    			else if (resultWeek1 == 0)
 	    			{
 	    				if (column == 2) setBackground(isSelected ? purpleColor : purpleColor);
-	    				else if(column == 4) setBackground(isSelected ? purpleColor : purpleColor);
+
 	    				else if (flag2 == 1)
 		    			{
-		    				if (column == 7) setBackground (isSelected ? blueColor : blueColor);
-		    				else if (column == 6) setBackground (isSelected ? yellowColor : yellowColor);
-		    				else setBackground(isSelected ? Color.white : Color.white);
+		    				if (column == 6) setBackground(isSelected ? yellowColor : yellowColor);
+		    				else if (resultWeek2 == 0)
+		    				{
+		    					if (column == 7) setBackground(isSelected ? purpleColor : purpleColor);
+		    					else setBackground(isSelected ? Color.white : Color.white);
+		    				}
+		    				else if (resultWeek2 == 1)
+		    				{
+		    					if (column == 7) setBackground(isSelected ? blueColor : blueColor);
+		    					else setBackground(isSelected ? Color.white : Color.white);
+		    				}
 		    			}
 	    				else if (flag2 == 2)
 		    			{
@@ -169,12 +171,19 @@ public class Planner extends JFrame
 	    			else if (resultWeek1 == 1)
 	    			{
 	    				if (column == 2) setBackground(isSelected ? blueColor : blueColor);
-	    				else if(column == 4) setBackground(isSelected ? purpleColor : purpleColor);
 	    				else if (flag2 == 1)
 		    			{
-		    				if (column == 7) setBackground (isSelected ? blueColor : blueColor);
-		    				else if (column == 6) setBackground (isSelected ? yellowColor : yellowColor);
-		    				else setBackground(isSelected ? Color.white : Color.white);
+		    				if (column == 6) setBackground(isSelected ? yellowColor : yellowColor);
+		    				else if (resultWeek2 == 0)
+		    				{
+		    					if (column == 7) setBackground(isSelected ? purpleColor : purpleColor);
+		    					else setBackground(isSelected ? Color.white : Color.white);
+		    				}
+		    				else if (resultWeek2 == 1)
+		    				{
+		    					if (column == 7) setBackground(isSelected ? blueColor : blueColor);
+		    					else setBackground(isSelected ? Color.white : Color.white);
+		    				}
 		    			}
 	    				else if (flag2 == 2)
 		    			{
@@ -185,19 +194,28 @@ public class Planner extends JFrame
 	    			}
 	    			else setBackground(isSelected ? Color.white : Color.white);
 	    		}
+	    		// Четверг
 	    		else if (flag1 == 4)
 	    		{
 	    			if (column == 4) setBackground(isSelected ? greenColor : greenColor);
 	    			else if (column == 2) setBackground (isSelected ? yellowColor: yellowColor);
+	    			else if (column == 5) setBackground(isSelected ? purpleColor : purpleColor);
 	    			else if (resultWeek1 == 0)
 	    			{
 	    				if (column == 3) setBackground(isSelected ? purpleColor : purpleColor);
-	    				else if(column == 5) setBackground(isSelected ? purpleColor : purpleColor);
 	    				else if (flag2 == 1)
 		    			{
-		    				if (column == 7) setBackground (isSelected ? blueColor : blueColor);
-		    				else if (column == 6) setBackground (isSelected ? yellowColor : yellowColor);
-		    				else setBackground(isSelected ? Color.white : Color.white);
+		    				if (column == 6) setBackground(isSelected ? yellowColor : yellowColor);
+		    				else if (resultWeek2 == 0)
+		    				{
+		    					if (column == 7) setBackground(isSelected ? purpleColor : purpleColor);
+		    					else setBackground(isSelected ? Color.white : Color.white);
+		    				}
+		    				else if (resultWeek2 == 1)
+		    				{
+		    					if (column == 7) setBackground(isSelected ? blueColor : blueColor);
+		    					else setBackground(isSelected ? Color.white : Color.white);
+		    				}
 		    			}
 	    				else if (flag2 == 2)
 		    			{
@@ -209,12 +227,19 @@ public class Planner extends JFrame
 	    			else if (resultWeek1 == 1)
 	    			{
 	    				if (column == 3) setBackground(isSelected ? blueColor : blueColor);
-	    				else if(column == 5) setBackground(isSelected ? purpleColor : purpleColor);
 	    				else if (flag2 == 1)
 		    			{
-		    				if (column == 7) setBackground (isSelected ? blueColor : blueColor);
-		    				else if (column == 6) setBackground (isSelected ? yellowColor : yellowColor);
-		    				else setBackground(isSelected ? Color.white : Color.white);
+		    				if (column == 6) setBackground(isSelected ? yellowColor : yellowColor);
+		    				else if (resultWeek2 == 0)
+		    				{
+		    					if (column == 7) setBackground(isSelected ? purpleColor : purpleColor);
+		    					else setBackground(isSelected ? Color.white : Color.white);
+		    				}
+		    				else if (resultWeek2 == 1)
+		    				{
+		    					if (column == 7) setBackground(isSelected ? blueColor : blueColor);
+		    					else setBackground(isSelected ? Color.white : Color.white);
+		    				}
 		    			}
 	    				else if (flag2 == 2)
 		    			{
@@ -225,41 +250,120 @@ public class Planner extends JFrame
 	    			}
 	    			else setBackground(isSelected ? Color.white : Color.white);
 	    		}
+	    		// Пятница
 	    		else if (flag1 == 5)
 	    		{
 	    			if (column == 5) setBackground(isSelected ? greenColor : greenColor);
-	    			else if (column == 4) setBackground (isSelected ? blueColor : blueColor);
 	    			else if (column == 3) setBackground (isSelected ? yellowColor: yellowColor);
-	    			else if (flag2 == 1)
+	    			else if (resultWeek1 == 0)
 	    			{
-	    				if (column == 7) setBackground (isSelected ? blueColor : blueColor);
-	    				else if (column == 6) setBackground (isSelected ? yellowColor: yellowColor);
+	    				if (column == 4) setBackground(isSelected ? purpleColor : purpleColor);
+	    				else if(column == 6) setBackground(isSelected ? purpleColor : purpleColor);
+	    				else if (flag2 == 1)
+		    			{
+		    				if (column == 6) setBackground(isSelected ? yellowColor : yellowColor);
+		    				else if (resultWeek2 == 0)
+		    				{
+		    					if (column == 7) setBackground(isSelected ? purpleColor : purpleColor);
+		    					else setBackground(isSelected ? Color.white : Color.white);
+		    				}
+		    				else if (resultWeek2 == 1)
+		    				{
+		    					if (column == 7) setBackground(isSelected ? blueColor : blueColor);
+		    					else setBackground(isSelected ? Color.white : Color.white);
+		    				}
+		    			}
+	    				else if (flag2 == 2)
+		    			{
+		    				if (column == 7) setBackground (isSelected ? yellowColor : yellowColor);
+		    				else setBackground(isSelected ? Color.white : Color.white);
+		    			}
 	    				else setBackground(isSelected ? Color.white : Color.white);
 	    			}
-	    			else if (flag2 == 2)
+	    			else if (resultWeek1 == 1)
 	    			{
-	    				if (column == 7) setBackground (isSelected ? yellowColor : yellowColor);
+	    				if (column == 4) setBackground(isSelected ? blueColor : blueColor);
+	    				else if(column == 6) setBackground(isSelected ? purpleColor : purpleColor);
+	    				else if (flag2 == 1)
+		    			{
+		    				if (column == 6) setBackground(isSelected ? yellowColor : yellowColor);
+		    				else if (resultWeek2 == 0)
+		    				{
+		    					if (column == 7) setBackground(isSelected ? purpleColor : purpleColor);
+		    					else setBackground(isSelected ? Color.white : Color.white);
+		    				}
+		    				else if (resultWeek2 == 1)
+		    				{
+		    					if (column == 7) setBackground(isSelected ? blueColor : blueColor);
+		    					else setBackground(isSelected ? Color.white : Color.white);
+		    				}
+		    			}
+	    				else if (flag2 == 2)
+		    			{
+		    				if (column == 7) setBackground (isSelected ? yellowColor : yellowColor);
+		    				else setBackground(isSelected ? Color.white : Color.white);
+		    			}
 	    				else setBackground(isSelected ? Color.white : Color.white);
 	    			}
 	    			else setBackground(isSelected ? Color.white : Color.white);
 	    		}
+	    		// Суббота (доделать)
 	    		else if (flag1 == 6)
 	    		{
 	    			if (column == 6) setBackground(isSelected ? greenColor : greenColor);
-	    			else if (column == 5) setBackground (isSelected ? blueColor : blueColor);
 	    			else if (column == 4) setBackground (isSelected ? yellowColor: yellowColor);
-	    			else if (flag2 == 1)
-					{
-	    				if (column == 7) setBackground (isSelected ? blueColor : blueColor);
-	    				else setBackground(isSelected ? Color.white : Color.white);
-					}
-	    			else if (flag2 == 2)
+	    			else if (resultWeek1 == 0)
 	    			{
-	    				if (column == 7) setBackground (isSelected ? yellowColor : yellowColor);
+	    				if (column == 5) setBackground(isSelected ? purpleColor : purpleColor);
+	    				else if(column == 6) setBackground(isSelected ? purpleColor : purpleColor);
+	    				else if (flag2 == 1)
+		    			{
+		    				if (column == 6) setBackground(isSelected ? yellowColor : yellowColor);
+		    				else if (resultWeek2 == 0)
+		    				{
+		    					if (column == 7) setBackground(isSelected ? purpleColor : purpleColor);
+		    					else setBackground(isSelected ? Color.white : Color.white);
+		    				}
+		    				else if (resultWeek2 == 1)
+		    				{
+		    					if (column == 7) setBackground(isSelected ? blueColor : blueColor);
+		    					else setBackground(isSelected ? Color.white : Color.white);
+		    				}
+		    			}
+	    				else if (flag2 == 2)
+		    			{
+		    				if (column == 7) setBackground (isSelected ? yellowColor : yellowColor);
+		    				else setBackground(isSelected ? Color.white : Color.white);
+		    			}
 	    				else setBackground(isSelected ? Color.white : Color.white);
 	    			}
-	    			else setBackground(isSelected ? Color.white : Color.white);
+	    			else if (resultWeek1 == 1)
+	    			{
+	    				if (column == 4) setBackground(isSelected ? blueColor : blueColor);
+	    				else if(column == 6) setBackground(isSelected ? purpleColor : purpleColor);
+	    				else if (flag2 == 1)
+		    			{
+		    				if (column == 6) setBackground(isSelected ? yellowColor : yellowColor);
+		    				else if (resultWeek2 == 0)
+		    				{
+		    					if (column == 7) setBackground(isSelected ? purpleColor : purpleColor);
+		    					else setBackground(isSelected ? Color.white : Color.white);
+		    				}
+		    				else if (resultWeek2 == 1)
+		    				{
+		    					if (column == 7) setBackground(isSelected ? blueColor : blueColor);
+		    					else setBackground(isSelected ? Color.white : Color.white);
+		    				}
+		    			}
+	    				else if (flag2 == 2)
+		    			{
+		    				if (column == 7) setBackground (isSelected ? yellowColor : yellowColor);
+		    				else setBackground(isSelected ? Color.white : Color.white);
+		    			}
+	    				else setBackground(isSelected ? Color.white : Color.white);
+	    			}
 	    		}
+	    		// Воскресенье
 	    		else if (flag1 == 7)
 	    		{
 	    			if (column == 7) setBackground(isSelected ? greenColor : greenColor);
@@ -308,6 +412,7 @@ public class Planner extends JFrame
 	    				}
 	    			}
 	    		}
+	    		// категория женщин в декрете
 	    		if (flagCat == "Декрет")
 	    		{
 	    			if (resultSale == 0)
@@ -364,9 +469,11 @@ public class Planner extends JFrame
 			// работа с днями продаж
 	    	if (dayMode == 1)
 	    	{
+	    		// Понедельник
 	    		if (flag2 == 1)
 	    		{
 	    			if (column == 1) setBackground(isSelected ? greenColor : greenColor);
+	    			else if (column == 2) setBackground(isSelected ? purpleColor : purpleColor);
 	    			else if (flag1 == 1)
 	    			{
 	    				if (column == 6) setBackground(isSelected ? yellowColor : yellowColor);
@@ -378,12 +485,14 @@ public class Planner extends JFrame
 	    				if (column == 7) setBackground(isSelected ? yellowColor : yellowColor);
 	    				else setBackground (isSelected? Color.white : Color.white);
 	    			}
-	    		else setBackground(isSelected ? Color.white : Color.white);
+	    			else setBackground(isSelected ? Color.white : Color.white);
 	    		}
+	    		// Вторник
 	    		else if (flag2 == 2)
 	    		{
 	    			if (column == 2) setBackground(isSelected ? greenColor : greenColor);
 	    			else if (column == 1) setBackground (isSelected ? blueColor : blueColor);
+	    			else if (column == 3) setBackground (isSelected ? purpleColor : purpleColor);
 	    			else if (flag1 == 1)
 	    			{
 	    				if (column == 7) setBackground(isSelected ? blueColor : blueColor);
@@ -397,24 +506,26 @@ public class Planner extends JFrame
 	    			}
 	    			else setBackground(isSelected ? Color.white : Color.white);
 	    		}
-			else if (flag2 == 3)
-			{
-				if (column == 3) setBackground(isSelected ? greenColor : greenColor);
-				else if (column == 2) setBackground (isSelected ? blueColor : blueColor);
-				else if (column == 1) setBackground (isSelected ? yellowColor: yellowColor);
-				else if (flag1 == 1)
-				{
-					if (column == 7) setBackground(isSelected ? blueColor : blueColor);
-					else if (column == 6) setBackground(isSelected ? yellowColor : yellowColor);
-					else setBackground(isSelected ? Color.white : Color.white);
-				}
-				else if (flag1 == 2)
-				{
-					if (column == 7) setBackground(isSelected ? yellowColor : yellowColor);
-					else setBackground (isSelected? Color.white : Color.white);
-				}
-				else setBackground(isSelected ? Color.white : Color.white);
-			}
+	    		// Среда
+	    		else if (flag2 == 3)
+	    		{
+	    			if (column == 3) setBackground(isSelected ? greenColor : greenColor);
+	    			else if (column == 2) setBackground (isSelected ? blueColor : blueColor);
+	    			else if (column == 1) setBackground (isSelected ? yellowColor: yellowColor);
+	    			else if (column == 4) setBackground (isSelected ? purpleColor : purpleColor);
+	    			else if (flag1 == 1)
+	    			{
+	    				if (column == 7) setBackground(isSelected ? blueColor : blueColor);
+	    				else if (column == 6) setBackground(isSelected ? yellowColor : yellowColor);
+	    				else setBackground(isSelected ? Color.white : Color.white);
+	    			}
+	    			else if (flag1 == 2)
+	    			{
+	    				if (column == 7) setBackground(isSelected ? yellowColor : yellowColor);
+	    				else setBackground (isSelected? Color.white : Color.white);
+	    			}
+	    			else setBackground(isSelected ? Color.white : Color.white);
+	    		}
 			else if (flag2 == 4)
 			{
 				if (column == 4) setBackground(isSelected ? greenColor : greenColor);
@@ -549,6 +660,7 @@ public class Planner extends JFrame
 	    			{
 	    				if (column == 6) setBackground(isSelected ? greenColor : greenColor);
 	    				else if (column == 4) setBackground(isSelected ? yellowColor : yellowColor);
+	    				else if (column == 1) setBackground(isSelected ? purpleColor : purpleColor);
 	    				else if (resultWeek2 == 0)
 	    				{
 	    					if (column == 5) setBackground(isSelected ? purpleColor : purpleColor);
@@ -632,7 +744,8 @@ public class Planner extends JFrame
 	    	{
 	    		if (flagCat == "Стандарт")
 	    		{
-	    			if (resultSale == 0) {
+	    			if (resultSale == 0)
+	    			{
 	    				if (column == 3) setBackground(isSelected ? greenColor : greenColor);
 	    				else if (column == 1) setBackground(isSelected ? yellowColor : yellowColor);
 	    				else if (resultWeek3 == 0)
@@ -649,7 +762,8 @@ public class Planner extends JFrame
 	    				}
 	    				else setBackground(isSelected ? Color.white : Color.white);
 	    			}
-	    			else if (resultSale == 1) {
+	    			else if (resultSale == 1)
+	    			{
 	    				if (column == 4) setBackground(isSelected ? greenColor : greenColor);
 	    				else if (column == 2) setBackground(isSelected ? yellowColor : yellowColor);
 	    				else if (resultWeek3 == 0)
@@ -673,12 +787,35 @@ public class Planner extends JFrame
 	    			{
 	    				if (column == 6) setBackground(isSelected ? greenColor : greenColor);
 	    				else if (column == 4) setBackground(isSelected ? yellowColor : yellowColor);
+	    				else if (column == 1) setBackground(isSelected ? purpleColor : purpleColor);
+	    				else if (resultWeek1 == 0)
+	    				{
+	    					if (column == 5) setBackground(isSelected ? purpleColor : purpleColor);
+	    					else if (column == 7) setBackground(isSelected ? purpleColor : purpleColor);
+	    					else setBackground(isSelected ? Color.white : Color.white);
+	    				}
+	    				else if (resultWeek1 == 1)
+	    				{
+	    					if (column == 5) setBackground(isSelected ? blueColor : blueColor);
+	    					else if (column == 7) setBackground(isSelected ? purpleColor : purpleColor);
+	    					else setBackground(isSelected ? Color.white : Color.white);
+	    				}
 	    				else setBackground(isSelected ? Color.white : Color.white);
 	    			}
 	    			else if (resultSale == 1)
 	    			{
 	    				if (column == 7) setBackground(isSelected ? greenColor : greenColor);
 	    				else if (column == 5) setBackground(isSelected ? yellowColor : yellowColor);
+	    				else if (resultWeek1 == 0)
+	    				{
+	    					if (column == 6) setBackground(isSelected ? purpleColor : purpleColor);
+	    					else setBackground(isSelected ? Color.white : Color.white);
+	    				}
+	    				else if (resultWeek1 == 1)
+	    				{
+	    					if (column == 6) setBackground(isSelected ? blueColor : blueColor);
+	    					else setBackground(isSelected ? Color.white : Color.white);
+	    				}
 	    				else setBackground(isSelected ? Color.white : Color.white);
 	    			}
 	    		}
